@@ -1,0 +1,47 @@
+.dropdown > .mdl-button{
+  transform: scale(1.5);
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  }
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: #fff;
+  min-width: 175px;
+  z-index: 1;
+  border-radius: 2px;
+  will-change: transform;
+  transition: 0.5s;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
+  }
+
+.dropdown-content a {
+  color: rgba(0,0,0,.87);
+  padding: 14px 16px;
+  text-decoration: none;
+  display: block; 
+}
+
+.dropdown-content hr {
+  padding: 0;
+  margin: 0;
+}
+
+.disable-item{
+  color: #bdbdbd !important;
+  background-color: #fff !important;
+}
+
+.dropdown-content a:hover {background-color: #eeeeee;}
+
+.dropdown-content a:active {background-color: #e0e0e0;}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
