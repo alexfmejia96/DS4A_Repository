@@ -1,17 +1,14 @@
 from pathlib import Path
 import os, subprocess, json
 
-import dash
+import dash, dash_table
 import dash_core_components as dcc
 import dash_html_components as html
-import dash_table
 from dash.dependencies import Input, Output, State
 from bs4 import BeautifulSoup as BS
 
 from layout import header, navbar, table, elements, container
 from utils import misc, gdrive
-  
-import dash_defer_js_import as dji
 
 META_KEYS = list(misc.meta_keys_dic.keys())
 COL_NAMES = {
@@ -46,7 +43,6 @@ dash_app = dash.Dash(__name__,
 app = dash_app.server
 
 dash_app.layout = html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed-header", style={'position': 'absolute'}, children=[
-  dji.Import(src="https://code.getmdl.io/1.3.0/material.min.js"),
   header.new('DS4A Team 85'),
   container.new(children=[
     html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer", children=[
@@ -84,7 +80,6 @@ def clicks(btn_load, btn_meta, btn_class):
   print('>>Nav callback')
 
   if btn_check(btn_load, 'btn_load'):
-    print('>load!')
     CURRENT_VIEW = elements.content_update('Lista de Imágenes', 
               html.Div(style={'height':'100%'}, children=
                   table.new(IMG_DATA.as_df(), COL_NAMES)
@@ -92,7 +87,6 @@ def clicks(btn_load, btn_meta, btn_class):
         )
 
   elif btn_check(btn_class, 'btn_class'):
-    print('>clas!')
 
     os.chdir('model/')
     os.system('''python detect.py --weights weights/last_yolov5s_results.pt --img 416 --conf 0.4 --source ../assets/img_input --output ../assets/img_output --save-txt''')
@@ -126,10 +120,10 @@ def clicks(btn_load, btn_meta, btn_class):
     )
 
   elif btn_check(btn_meta, 'btn_meta'):
-    print('>meta!')
+    pass
 
   else:
-    print('>else!')
+    print('>Else!')
     none_check = [BTN_COUNT[k] for k in ['btn_load', 'btn_meta', 'btn_class']]
     CURRENT_VIEW = elements.empty_msg() if not any(none_check) == None else CURRENT_VIEW
 

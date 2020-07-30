@@ -26,7 +26,7 @@ def get_raw_metadata(img):
 class Service:
 
     def __init__(self):
-        self.flow = Flow.from_client_secrets_file('credentials.json',
+        self.flow = Flow.from_client_secrets_file('../credentials.json',
             SCOPES, redirect_uri='urn:ietf:wg:oauth:2.0:oob')
         self.auth_url, _ = self.flow.authorization_url(prompt='consent')
         self.service = None
@@ -84,4 +84,3 @@ class Service:
 
         
         return ([image_list, metadata_list])
-        

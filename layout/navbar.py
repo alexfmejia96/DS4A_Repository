@@ -58,9 +58,8 @@ def new():
         html.Div(className='mdl-card mdl-shadow--2dp input-panel', id='view_folders', hidden=True, children=panel_folders(),
           style={'margin-top':'16px'}),
 
-        html.Label('-', id='dw_result', style={'color':'var(--accent_d)', 'padding': '16px'}),
-
         html.Div(className='mdl-layout-spacer'),
+        html.Label('-', id='dw_result', style={'color':'var(--accent_d)'}),
         html.Div(id='nav_bottom_box', children=[
           html.Div(id='debug_output', children=''),
           html.Hr(),
