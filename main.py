@@ -1,16 +1,27 @@
-from pathlib import Path
-import os, subprocess, json
 
-import dash, dash_table
-import dash_core_components as dcc
+import os, platform, glob
+import dash
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
-from bs4 import BeautifulSoup as BS
 
 from layout import header, navbar, table, elements, container
 from utils import misc, gdrive
 
+import pandas as pd
+
+PLATFORM = platform.system().lower()
+CONFIG = {
+  'weights':'weights/last_yolov5s_results.pt',
+  'img': 416,
+  'conf': 0.4,
+  'source': 'assets/img_input',
+  'output': 'assets/img_output'
+}
+
+SERVICE = gdrive.Service()
 META_KEYS = list(misc.meta_keys_dic.keys())
+IMG_DATA = None
+DETECTION = None
 COL_NAMES = {
     'filename': 'Nombre de Imágen',
     'path': 'Ruta',
@@ -19,27 +30,17 @@ COL_NAMES = {
     'C_Date': 'Fecha de Creación'
 }
 
-SERVICE = gdrive.Service()
-DL_DIR = 'assets/img_input/'
-IMG_DATA = None
 CURRENT_VIEW = elements.empty_msg()
-
 BTN_COUNT = dict()
 
-
-scripts = ['https://code.getmdl.io/1.3.0/material.min.js']
 external_stylesheets = [
   'https://fonts.googleapis.com/icon?family=Material+Icons',
   'https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@800&display=swap',
   'https://code.getmdl.io/1.3.0/material.blue_grey-light_blue.min.css',
-  'https://dl.dropboxusercontent.com/s/uv0jj64e3wku5f2/team85_style.css?dl=1'
   ]
 
 
-dash_app = dash.Dash(__name__,
-  external_scripts=scripts,
-  external_stylesheets=external_stylesheets)
-
+dash_app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash_app.server
 
 dash_app.layout = html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed-header", style={'position': 'absolute'}, children=[
@@ -51,7 +52,6 @@ dash_app.layout = html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed
     ])
   ])
 ])
-
 
 def btn_check(x, y):
   global BTN_COUNT
@@ -67,79 +67,60 @@ def btn_check(x, y):
 
   return(False)
 
-#---- NAVIGATION BAR ---#
+def remove_files():
+  global CONFIG
+  files = glob.glob(f"{CONFIG['output']}/*") + glob.glob(f"{CONFIG['source']}/*")
+  for f in files:
+      os.remove(f)
+  print('>files were removed')
+
+def detect(weights, img, conf, source, output):
+  global PLATFORM; py= 'python' if PLATFORM=='windows' else 'python3'
+  os.chdir('model/')
+  r = os.system(f'{py} detect.py --weights {weights} --img {img} --conf {conf} --source ../{source} --output ../{output} --save-txt')
+  os.chdir('..')    
+
+  return(r)
+
+#---- CALLBACKS ---#
 @dash_app.callback(
     Output('main_debug', 'children'),
-    [
-    Input('btn_loadimg', 'n_clicks'),
-    Input('btn_meta', 'n_clicks'),
-    Input('btn_class', 'n_clicks')
-    ])
+    [Input('btn_loadimg', 'n_clicks'),Input('btn_meta', 'n_clicks'),Input('btn_class', 'n_clicks')])
 def clicks(btn_load, btn_meta, btn_class):
-  global CURRENT_VIEW, IMG_DATA
+  global CURRENT_VIEW, IMG_DATA, CONFIG
   print('>>Nav callback')
 
   if btn_check(btn_load, 'btn_load'):
     CURRENT_VIEW = elements.content_update('Lista de Imágenes', 
-              html.Div(style={'height':'100%'}, children=
-                  table.new(IMG_DATA.as_df(), COL_NAMES)
-              )
-        )
-
-  elif btn_check(btn_class, 'btn_class'):
-
-    os.chdir('model/')
-    os.system('''python detect.py --weights weights/last_yolov5s_results.pt --img 416 --conf 0.4 --source ../assets/img_input --output ../assets/img_output --save-txt''')
-    os.chdir('..')
-    
-    dir_list = list(Path('assets/img_output').rglob("*.[Jj][Pp][Gg]"))
-    card_list = []
-
-    for img_dir in dir_list:
-      _img_dir = str(img_dir).replace('\\','/')
-      json_dir = _img_dir.lower().replace('jpg','json')
-
-      if Path(json_dir).is_file():
-        with open(json_dir) as json_file:
-          card_det = json.load(json_file)
-
-      else:
-        card_det = 'Ningún Aislador fue detectado!'
-
-      card = elements.result_card(
-        img_title=str(img_dir.name),
-        img_det=str(card_det),
-        img_class='None',
-        img_url=dash_app.get_asset_url(_img_dir.replace('assets/',''))
+      html.Div(style={'height':'100%'}, children=
+        table.new(IMG_DATA.as_df(), COL_NAMES)
       )
-
-      card_list.append(card)
-
-    CURRENT_VIEW = elements.content_update('Resultados',
-      html.Div(className="mdl-cell mdl-cell--4-col", children=card_list)
     )
 
   elif btn_check(btn_meta, 'btn_meta'):
-    pass
+    CURRENT_VIEW = elements.content_update('Detalle de Imágenes', 
+      elements.img_details_view('assets')
+    )
+
+  elif btn_check(btn_class, 'btn_class'):
+    param = ['weights','img','conf','source','output'] 
+    detect(*[CONFIG[p] for p in param])
+    
+    CURRENT_VIEW = elements.content_update('Resultados',
+      html.Div(className="mdl-cell mdl-cell--4-col",
+        children = elements.result_card_list(CONFIG['output']))
+    )
 
   else:
     print('>Else!')
     none_check = [BTN_COUNT[k] for k in ['btn_load', 'btn_meta', 'btn_class']]
     CURRENT_VIEW = elements.empty_msg() if not any(none_check) == None else CURRENT_VIEW
-
-  print(BTN_COUNT)
+  
   return(CURRENT_VIEW)
 
-
 @dash_app.callback(
-  [
-  Output('btn_signOut', 'className'),
-  Output('btn_signOut', 'href'),
-  Output('view_gdrive', 'hidden'),
-  Output('get_code', 'href')
-  ],
-  [Input('btn_gdrive', 'n_clicks')]
-  )
+  [Output('btn_signOut', 'className'), Output('btn_signOut', 'href'), Output('view_gdrive', 'hidden'), Output('get_code', 'href')],
+  [Input('btn_gdrive', 'n_clicks')])
 def gdrive_connect(btn_gdrive):
   global SERVICE
   print('>>Drive callback')
@@ -154,16 +135,11 @@ def gdrive_connect(btn_gdrive):
   return(['disable-item', None, True, ''])
 
 @dash_app.callback(
-    [Output('view_gdrive','children'),
-     Output('view_folders','hidden'),
-     Output('folder_list','options')],
+    [Output('view_gdrive','children'), Output('view_folders','hidden'), Output('folder_list','options')],
     [Input('set_code', 'n_clicks')],
     [State('code_input', 'value')])
 def set_code(btn_setcode, token_code):
   global SERVICE, BTN_COUNT
-  print('>>CODE callback')
-
-  print(BTN_COUNT, btn_setcode)
 
   if btn_check(btn_setcode, 'btn_setcode'):
     SERVICE.auth_service(token_code)
@@ -192,11 +168,13 @@ def set_code(btn_setcode, token_code):
     [Input('btn_driveld', 'n_clicks')],
     [State('folder_list', 'value')])
 def gdrive_download(btn_driveld, sel_folder):
-  global SERVICE, IMG_DATA, DL_DIR
+  global SERVICE, IMG_DATA, CONFIG
 
   if btn_check(btn_driveld, 'btn_driveld'):
+    remove_files()
+
     img_list = SERVICE.get_files_infolder(sel_folder)
-    IMG_DATA = misc.data_object(SERVICE, img_list, META_KEYS, DL_DIR)
+    IMG_DATA = misc.data_object(SERVICE, img_list, META_KEYS, CONFIG['source'])
 
     r=html.H4(className='mdl-card__title-text',children=[
         'Datos Descargados',
@@ -207,8 +185,40 @@ def gdrive_download(btn_driveld, sel_folder):
 
   return(navbar.panel_folders())
 
+@dash_app.callback(
+    [Output('meta_table','children'),Output('meta_map','children'),Output('meta_img','src')],
+    [Input('img_list', 'value')])
+def meta_view(sel_img):
+  global IMG_DATA, CONFIG
+
+  df = pd.DataFrame({
+    'filename':['dji_0016.jpg','dji_0961.jpg'],
+    'Coord': ['5.8584 , -75.6777']*2,
+    'C_Date': ['05/07/2020 13:20']*2,
+    'Alt': ['150.00 m']*2
+    })
+
+  print(IMG_DATA.as_df().set_index('filename'))
+
+  df = IMG_DATA.as_df().set_index('filename')
+  img_name = sel_img.split('/')[-1].upper()
+  img_data = df.loc[img_name]
+
+
+  meta_table = [
+    elements.meta_row('Clase', '---'),
+    elements.meta_row('Fecha de Captura', img_data['C_Date'].split(' ')[0]),
+    elements.meta_row('Hora de Captura', img_data['C_Date'].split(' ')[1]),
+    elements.meta_row('Coordenadas', img_data['Coord']),
+    elements.meta_row('Altitud', img_data['Alt']),
+    ]
+
+  meta_map = misc.map2html(elements.img_map(df.loc[img_name]))
+  meta_map = html.Iframe(**{'data-html':meta_map}, id='meta_frame',
+    style={'width':'100%','height':'100%','background':'red'})
+
+  return([meta_table, meta_map, sel_img])
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='8000')
-
-
+    app.run(host='0.0.0.0', port='8000', debug=True)
+    #dash_app.run_server(host='0.0.0.0', port='8000', debug=True)

@@ -56,7 +56,7 @@ class Service:
 
     def get_files_infolder(self, parent_id):
         s = self.service
-        resp = s.files().list(q=f"'{parent_id}' in parents and trashed = false",
+        resp = s.files().list(q=f"'{parent_id}' in parents and trashed = false and mimeType = 'image/jpeg'",
                 spaces='drive',
                 fields='nextPageToken, files(id, name)').execute()
 
@@ -76,7 +76,7 @@ class Service:
             if in_ram:
                 image_list.append(temp_file)
             else:
-                temp_file_dir = dl_dir + img_item['name'].lower()
+                temp_file_dir = '/'.join([dl_dir , img_item['name'].lower()])
                 temp_file.save(temp_file_dir)
                 image_list.append(temp_file_dir) 
 

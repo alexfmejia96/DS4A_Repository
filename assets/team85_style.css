@@ -181,3 +181,33 @@
 .mdl-layout__content > .page-content{
 	background: #F8F8F8;
 }
+
+
+.mdl-data-table td {
+	height: 36px;
+}
+.mdl-data-table tbody tr {
+    height: unset;
+}
+#img_list{
+    font-family: 'Saira Condensed', sans-serif;
+    color: var(--accent_d);
+    font-size: 24px;
+	height: 36px;
+	text-align-last:center;
+	outline-color: transparent;
+    border-color: transparent;
+    margin: 16px 8px 8px 8px;
+}
+option.default{
+	color:var(--primary);
+	font-size: 16px;
+}
+option.good{
+	color: rgba(0,100,0,0.5);
+	font-size: 14px;
+}
+option.bad{
+	color: rgba(100,0,0,0.5);
+	font-size: 14px;
+}

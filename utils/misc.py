@@ -1,6 +1,8 @@
 import folium
 from folium import FeatureGroup, LayerControl, Map, Marker
 import pandas as pd
+from bs4 import BeautifulSoup as BS
+import base64
 
 #Error unique img file
 #Img with no atts
@@ -55,7 +57,7 @@ class data_object:
 		self.dl_dir = dl_dir
 		self.in_ram = in_ram
 
-		self.img_names = [img['name'] for img in img_items]
+		self.img_names = [img['name'].upper() for img in img_items]
 		self.img_ids = [img['id'] for img in img_items]
 		self.image_list, metadata_list = SERVICE.download_files(img_items, dl_dir)
 
@@ -91,19 +93,24 @@ class data_object:
 
 ##----OTHER FUNCTIONS ----
 
-def map2html(map):
-    iframe = BS(map).body.iframe
-    iframe = base64.b64decode(iframe['data-html']).decode()
-    ren = [
-            ['width: 80.0%' , 'width: 100%'],
-            ['height: 75.0%;' , 'height: 100%;'],
-            ['left: 10.0%;' , ''],
-            ['top: 0.0%;' , '']
-        ]
-        
-    for old, new in ren:
-        iframe = iframe.replace(old, new)  
-    return(iframe)
+def map2html(img_map):
+	doc = BS(img_map, features="lxml")
+	doc = doc.div.div.iframe['data-html']
+	#doc = base64.b64decode(doc).decode()
+
+	# iframe = BS( img_map._repr_html_() ).body.iframe
+	# iframe = base64.b64decode(iframe['data-html']).decode()
+	# ren = [
+	#         ['width: 80.0%' , 'width: 100%'],
+	#         ['height: 75.0%;' , 'height: 100%;'],
+	#         ['left: 10.0%;' , ''],
+	#         ['top: 0.0%;' , '']
+	#     ]
+	    
+	# for old, new in ren:
+	#     iframe = iframe.replace(old, new)  
+
+	return(doc)
 
 def img_path2_dash(path):
     r = html.Img(src=app.get_asset_url(path),
