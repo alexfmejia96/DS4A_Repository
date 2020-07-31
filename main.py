@@ -214,7 +214,7 @@ def meta_view(sel_img):
     ]
 
   img_map = misc.map2html(elements.img_map(df.loc[img_name]))
-  img_map = html.Iframe(**{'data-html':meta_map}, id='meta_frame', style={'width':'100%','height':'100%'})
+  img_map = html.Iframe(**{'data-html':img_map}, id='meta_frame', style={'width':'100%','height':'100%'})
 
   return([meta_table, img_map, sel_img])
 
