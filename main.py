@@ -11,7 +11,7 @@ import pandas as pd
 
 PLATFORM = platform.system().lower()
 CONFIG = {
-  'weights':'weights/last_yolov5s_results.pt',
+  'weights':'weights/best_yolov5s_results.pt',
   'img': 416,
   'conf': 0.4,
   'source': 'assets/img_input',
