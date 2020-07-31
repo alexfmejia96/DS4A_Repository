@@ -19,7 +19,7 @@ new MutationObserver(function() {
 		  	</div>";
 		bar = ''
 			
-		img_list = document.getElementById('img_list');
+		let img_list = document.getElementById('img_list');
 		if(img_list != null){
 			
 			if(img_list.name != 'updated'){

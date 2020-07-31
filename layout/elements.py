@@ -34,8 +34,8 @@ def content_update(title, children):
           html.Div(className='mdl-card__title mdl-card--expand', children=[
               html.H2(className='mdl-card__title-text vertical-center', children=title),
               html.Div(className='mdl-layout-spacer', children=''),
-              icon_button('visibility'),
-              icon_button('delete'),
+              #icon_button('visibility'),
+              #icon_button('delete'),
           ])
     ]+ children)
     
@@ -50,11 +50,11 @@ def result_card(img_title='', img_det='', img_class='', img_url=''):
         html.Div(className='mdl-card__supporting-text', children=[    
           img_det
         ]),
-        html.Div(className='mdl-card__actions mdl-card--border', children=[
-          html.A(className='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect', style={'color':'green'}, children=[
-          img_class
-          ])
-        ])
+        # html.Div(className='mdl-card__actions mdl-card--border', children=[
+        #   html.A(className='mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect', style={'color':'green'}, children=[
+        #   img_class
+        #   ])
+        # ])
     ])
 
   return(r)
