@@ -213,11 +213,10 @@ def meta_view(sel_img):
     elements.meta_row('Altitud', img_data['Alt']),
     ]
 
-  meta_map = misc.map2html(elements.img_map(df.loc[img_name]))
-  meta_map = html.Iframe(**{'data-html':meta_map}, id='meta_frame',
-    style={'width':'100%','height':'100%','background':'red'})
+  img_map = misc.map2html(elements.img_map(df.loc[img_name]))
+  img_map = html.Iframe(**{'data-html':meta_map}, id='meta_frame', style={'width':'100%','height':'100%'})
 
-  return([meta_table, meta_map, sel_img])
+  return([meta_table, img_map, sel_img])
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8000', debug=True)

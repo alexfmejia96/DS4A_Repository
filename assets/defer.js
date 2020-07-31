@@ -48,7 +48,6 @@ new MutationObserver(function() {
 				this.contentDocument.open();
 				this.contentDocument.write(atob(this.getAttribute('data-html')));
 				this.contentDocument.close();
-				alert('dsf');
 			}
 		}
 		
