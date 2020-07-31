@@ -43,12 +43,10 @@ new MutationObserver(function() {
 		}
 
 		let meta_map =document.getElementById('meta_frame');
-		if(meta_map != null){
-			meta_map.onload = function(){
-				this.contentDocument.open();
-				this.contentDocument.write(atob(this.getAttribute('data-html')));
-				this.contentDocument.close();
-			}
+		if(meta_map != null){	
+			meta_map.contentDocument.open();
+			meta_map.contentDocument.write(atob(meta_map.getAttribute('data-html')));
+			meta_map.contentDocument.close();
 		}
 		
 	}else{
