@@ -52,7 +52,10 @@ def panel_param():
       dbc.Form([
         dbc.FormGroup([
           html.Div('+ Modelo', className='label'),
-          dbc.RadioItems(id='p_model', options=[{'label': 'YOLOv5 Best', 'value':'weights/best_yolov5s_results.pt'}],
+          dbc.RadioItems(id='p_model', options=[
+              {'label': 'YOLOv5 Best', 'value':'weights/best_yolov5s_results.pt'},
+              {'label': 'YOLOv5 Best Old', 'value':'weights/best_yolov5s_result_old.pt'}
+            ],
             value='weights/best_yolov5s_results.pt')
         ]),
         dbc.FormGroup([
