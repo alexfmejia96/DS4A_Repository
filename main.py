@@ -89,7 +89,7 @@ def detect(weights, img, conf, source, output):
     [Input('btn_loadimg', 'n_clicks'),Input('btn_meta', 'n_clicks'),Input('btn_class', 'n_clicks')],
     [State('p_model','value'),State('p_img','value'),State('p_conf','value'),])
 def clicks(btn_load, btn_meta, btn_class, p_model, p_img, p_conf):
-  global CURRENT_VIEW, IMG_DATA, CONFIG
+  global CURRENT_VIEW, IMG_DATA, CONFIG, DETECTION
   CONFIG['weights']=p_model; CONFIG['img']=p_img; CONFIG['conf']=p_conf;
   print('>>Nav callback')
 
@@ -108,12 +108,12 @@ def clicks(btn_load, btn_meta, btn_class, p_model, p_img, p_conf):
   elif btn_check(btn_class, 'btn_class'):
     param = ['weights','img','conf','source','output']
     temp = [CONFIG[p] for p in param]
-    print(temp)
     detect(*temp)
+
+    card_list, DETECTION = elements.result_card_list(CONFIG['output'])
     
     CURRENT_VIEW = elements.content_update('Resultados',
-      html.Div(className="mdl-cell mdl-cell--4-col",
-        children = elements.result_card_list(CONFIG['output']))
+      html.Div(className="mdl-cell mdl-cell--4-col", children=card_list)
     )
 
   else:
@@ -193,24 +193,30 @@ def gdrive_download(btn_driveld, sel_folder):
   return(navbar.panel_folders())
 
 @dash_app.callback(
-    [Output('meta_table','children'),Output('meta_map','children'),Output('meta_img','src')],
+    [Output('meta_table','children'),Output('meta_map','children'),Output('meta_img','src'), Output('meta_img','hidden')],
     [Input('img_list', 'value')])
 def meta_view(sel_img):
   global IMG_DATA, CONFIG
 
-  df = pd.DataFrame({
-    'filename':['dji_0016.jpg','dji_0961.jpg'],
-    'Coord': ['5.8584 , -75.6777']*2,
-    'C_Date': ['05/07/2020 13:20']*2,
-    'Alt': ['150.00 m']*2
-    })
+  if sel_img=='all':
+    img_map = misc.map2html(IMG_DATA.as_map())
+    img_map = html.Iframe(**{'data-html':img_map}, id='meta_frame', style={'width':'100%','height':'100%'})
 
-  print(IMG_DATA.as_df().set_index('filename'))
+    good, bad = misc.detect_count(DETECTION)
+    
+    meta_table = [
+    elements.meta_row('', ''),
+    elements.meta_row('Total Imágenes', len(IMG_DATA.img_names)),
+    elements.meta_row('+Buen Estado', good),
+    elements.meta_row('-Mal Estado', bad),
+    elements.meta_row('Sin Detección', len(IMG_DATA.img_names)-(good+bad)),
+    ]
+    
+    return([meta_table, img_map, sel_img, True])
 
   df = IMG_DATA.as_df().set_index('filename')
   img_name = sel_img.split('/')[-1].upper()
   img_data = df.loc[img_name]
-
 
   meta_table = [
     elements.meta_row('Clase', '---'),
@@ -223,7 +229,7 @@ def meta_view(sel_img):
   img_map = misc.map2html(elements.img_map(df.loc[img_name]))
   img_map = html.Iframe(**{'data-html':img_map}, id='meta_frame', style={'width':'100%','height':'100%'})
 
-  return([meta_table, img_map, sel_img])
+  return([meta_table, img_map, sel_img, False])
 
 @dash_app.callback(
     Output('lab_conf', 'children'),

@@ -207,8 +207,18 @@ option.bad{
 	color: white;
 }
 .form-group > input{
-	width: 100%;
+	background: transparent;
+    border: none;
+    outline: auto;
+    color: var(--);
+    text-align: center;
+    height: 20px;
 }
+
+.form-group > input[type='radio']:after {
+    background-color: red;
+}
+
 .form-group{
 	color: var(--accent_l);
 	text-align: left;

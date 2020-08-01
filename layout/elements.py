@@ -63,6 +63,7 @@ def result_card(img_title='', img_det='', img_class='', img_url=''):
 def result_card_list(main_dir):
   dir_list = list(Path(main_dir).rglob('*.[Jj][Pp][Gg]'))
   card_list = []
+  detection = {}
 
   for img_dir in dir_list:
     _img_dir = str(img_dir).replace('\\','/')
@@ -71,7 +72,9 @@ def result_card_list(main_dir):
 
     if Path(json_dir).is_file():
       with open(json_dir) as json_file:
-        card_det = len(json.load(json_file)[img_name])
+        json_dict = json.load(json_file)
+        detection = dict(**detection, **json_dict)
+        card_det = len(json_dict[img_name])
 
     else:
       card_det = 0
@@ -85,7 +88,7 @@ def result_card_list(main_dir):
 
     card_list.append(card)
 
-  return(card_list)
+  return([card_list, detection])
 
 def generate_options(path_list):
   img_options = [{'label':'>TODAS LAS IMÁGES', 'value':'all'}]
@@ -116,7 +119,7 @@ def img_details_view(asd):
         html.Div(className='mdl-card mdl-shadow--2dp', id='meta_map',
           style={'width':'65%','margin-right':'8px','background':'white'}),
         html.Div(className='mdl-card mdl-shadow--2dp', style={'witd':'100%'}, children=[
-          dbc.Select(id='img_list', options=generate_options(img_list), value='TODAS LAS IMÁGES'),
+          dbc.Select(id='img_list', options=generate_options(img_list), value='all'),
 
           html.Table(className='mdl-data-table mdl-js-data-table mdl-data-table',
             style={'border-left':'0','border-right':'0','bottom':'-1px'}, children=[

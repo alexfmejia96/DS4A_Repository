@@ -3,6 +3,7 @@ from folium import FeatureGroup, LayerControl, Map, Marker
 import pandas as pd
 from bs4 import BeautifulSoup as BS
 import base64
+from pathlib import Path
 
 #Error unique img file
 #Img with no atts
@@ -87,29 +88,37 @@ class data_object:
 
 		return(df)
 
-	def as_folium_map(self):
-		pass
+	def as_map(self, img_name=None):
+
+		if img_name == None:
+			coord_index = self.meta_keys.index('GPS')
+			coord_list = [self.metadata[key][coord_index][0:2]+[key] for key in self.metadata.keys()]
+			print(coord_list)
+
+			cood_t = list( map(list, zip(*coord_list)) )
+			center = [ (max(cood_t[0])+min(cood_t[0]))/2, (max(cood_t[1])+min(cood_t[1]))/2]
+
+			print(center)
+			print(coord_list)
+
+			img_map = Map(location=center, zoom_start=10,
+	        width='100%', height='100%',
+	        tiles='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', attr='Google')
+
+			for x, y, img in coord_list:
+				Marker(location=[x,y], popup='', tooltip=img).add_to(img_map)
+
+			return(img_map._repr_html_())
+
+		return('')
 
 
 ##----OTHER FUNCTIONS ----
 
 def map2html(img_map):
-	doc = BS(img_map)
+	print(img_map)
+	doc = BS(img_map, features="lxml")
 	doc = doc.div.div.iframe['data-html']
-	#doc = base64.b64decode(doc).decode()
-
-	# iframe = BS( img_map._repr_html_() ).body.iframe
-	# iframe = base64.b64decode(iframe['data-html']).decode()
-	# ren = [
-	#         ['width: 80.0%' , 'width: 100%'],
-	#         ['height: 75.0%;' , 'height: 100%;'],
-	#         ['left: 10.0%;' , ''],
-	#         ['top: 0.0%;' , '']
-	#     ]
-	    
-	# for old, new in ren:
-	#     iframe = iframe.replace(old, new)  
-
 	return(doc)
 
 def img_path2_dash(path):
@@ -120,8 +129,24 @@ def img_path2_dash(path):
 def df2_dash(df, id=''):
     r = dash_table.DataTable(
         id=id,
-        columns=[{"name": i, "id": i} for i in df.columns],
+        columns=[{'name': i, 'id': i} for i in df.columns],
         data=df.to_dict('records')
     )
     return(r)
+
+def detect_count(DETECTION):
+	good = 0
+	bad = 0
+	if DETECTION!=None:
+		for img_name in DETECTION.keys():
+			all_good = all([i['cls']=='insulatorg' for i in DETECTION[img_name]])
+			if all_good:
+				good += 1
+			else:
+				bad += 1
+
+	return([good, bad])
+
+
+
     
