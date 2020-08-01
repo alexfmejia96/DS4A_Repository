@@ -101,7 +101,7 @@ class data_object:
 			print(center)
 			print(coord_list)
 
-			img_map = Map(location=center, zoom_start=10,
+			img_map = Map(location=center, zoom_start=13,
 	        width='100%', height='100%',
 	        tiles='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', attr='Google')
 

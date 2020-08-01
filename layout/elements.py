@@ -24,7 +24,7 @@ def icon_button(children, id=''):
 def empty_msg():
 	r = html.Div(className='empty-msg', children=[
 		html.I(className='material-icons', style={'font-size': '500px', 'width':'100%'}, children='filter_hdr'),
-		html.H3(children='Aun no se han subido imágenes!')
+		html.H3(children='Aun no se han cargado imágenes!')
 		])
 	return(r)
 
