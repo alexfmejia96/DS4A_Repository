@@ -75,16 +75,22 @@ def result_card_list(main_dir):
       with open(json_dir) as json_file:
         json_dict = json.load(json_file)
         detection = dict(**detection, **json_dict)
-        card_det = len(json_dict[img_name])
+        card_det = []
+
+        for i, isolator in enumerate(json_dict[img_name]):
+          card_det.append(html.Div(style={'margin-left':'16px'},
+            children=f"Aislador {['Malo','Bueno'][isolator['cls_id']]}#{i+1}: Probabilidad {isolator['conf']*100:.2f}%"))
+          
+        
         good, bad = good, bad = misc.detect_count(json_dict)
         state, color = ['BUEN', 'green'] if good==1 else ['MAL', 'red']
         img_det = html.Div([
           html.Div(f'AISLADORES EN {state} ESTADO',
-            style={'color':color,'font-weight':'bold','font-family':"'Saira Condensed',sans-serif",'font-size':'20px'})
+            style={'color':color,'font-weight':'bold','font-family':"'Saira Condensed',sans-serif",'font-size':'20px','margin-bottom':'4px'}),
+          html.Div(card_det)
         ])
 
     else:
-      card_det = 0
       img_det = html.Div('No se detectaron Aisladores!')
 
     card = result_card(
