@@ -116,7 +116,7 @@ class data_object:
 ##----OTHER FUNCTIONS ----
 
 def map2html(img_map):
-	doc = BS(img_map, features="lxml")
+	doc = BS(img_map)
 	doc = doc.div.div.iframe['data-html']
 	return(doc)
 
