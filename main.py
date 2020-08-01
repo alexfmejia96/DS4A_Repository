@@ -156,7 +156,7 @@ def set_code(btn_setcode, token_code):
           html.Div(style={'flex':'1'}),
           html.I(className='material-icons mdl-list__item-icon', children='check_circle',
             style={'color':'white','transform':'scale(1.1)','margin':'auto'})
-        ], style={'font-size':'24px','width':'100%','color':'white'})
+        ], style={'font-size':'18px','width':'100%','color':'white'})
 
       r1 = [{'label':folder['name'], 'value':folder['id']} for folder in SERVICE.get_folder_list()]
       return([r, False, r1])
@@ -187,7 +187,7 @@ def gdrive_download(btn_driveld, sel_folder):
         html.Div(style={'flex':'1'}),
         html.I(className='material-icons mdl-list__item-icon', children='check_circle',
           style={'color':'white','transform':'scale(1.1)','margin':'auto'})
-      ], style={'font-size':'24px','width':'100%','color':'white'})
+      ], style={'font-size':'18px','width':'100%','color':'white'})
     return(r)
 
   return(navbar.panel_folders())

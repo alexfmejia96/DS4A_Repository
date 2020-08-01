@@ -3,6 +3,7 @@ import dash_bootstrap_components as dbc
 from pathlib import Path
 import json, glob
 from folium import FeatureGroup, LayerControl, Map, Marker
+from utils import misc
 
 def menu_li(children):
   r = 	html.Li(className='mdl-menu__item', children=children)
@@ -75,13 +76,19 @@ def result_card_list(main_dir):
         json_dict = json.load(json_file)
         detection = dict(**detection, **json_dict)
         card_det = len(json_dict[img_name])
+        good, bad = good, bad = misc.detect_count(json_dict)
+        img_det = html.Div([
+          html.Div(f'Aisladores en Buen Estado: {good}', style={'color':'green','font-weight':'bold'}),
+          html.Div(f'Aisladores en Mal  Estado: {bad}', style={'color':'red','font-weight':'bold'})
+        ])
 
     else:
       card_det = 0
+      img_det = html.Div('No se detectaron Aisladores!')
 
     card = result_card(
       img_title=str(img_dir.name),
-      img_det= html.Div(f'Aisladores Detectados: {card_det}', style={'color':'green','font-weight':'bold'} if card_det>0 else {}),
+      img_det= img_det,
       img_class='None',
       img_url=_img_dir
     )
