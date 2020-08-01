@@ -19,7 +19,7 @@ def new(header_title=''):
               html.A('Cerrar Sesión', className='disable-item', id='btn_signOut'),
               html.Hr(),
               #html.A('Configuración', href='#'),
-              html.A('Acerca de', href='#')
+              html.A('Acerca de', href='#', id='btn_about')
             ])
           ])
         ])

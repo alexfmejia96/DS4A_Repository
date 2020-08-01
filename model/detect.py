@@ -118,7 +118,7 @@ def detect(save_img=False):
                         dic_list[det_len-1]=dic_f
 					
                     if (save_img or view_img):  # Add bbox to image
-                        label = '%s#%s %.2f' % (names[int(cls)], str(det_len), conf)
+                        label = '%s#%s %.2f' % (['AISLADOR_MALO','AISLADOR_BUENO'][int(cls)], str(det_len), conf)
                         plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=3)
                     det_len -= 1
 

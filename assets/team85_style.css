@@ -1,14 +1,12 @@
-:root{
-	--primary: #006064;
-	--primary_l: #428e92;
-	--primary_d: #00363a;
-
-	--accent: #4fc3f7;
-	--accent_l: #8bf6ff;					
-	--accent_d: #0093c4;
-
-	--primary_txt: #ffffff;
-	--accent_txt: #000000;
+:root {
+    --primary: #02431c;
+    --primary_l: #629e67;
+    --primary_d: #00363a;
+    --accent: #047832;
+    --accent_l: #ffffff;
+    --accent_d: #047832;
+    --primary_txt: #000000;
+    --accent_txt: #000000;
 }
 
 .empty-msg{
@@ -56,7 +54,7 @@
 }
 #header_title{
 	font-family: 'Saira Condensed', sans-serif;
-	font-size: 50px;
+	font-size: 40px;
 	left: 90px;
 }
 
@@ -65,7 +63,7 @@
 .mdl-layout__drawer{
 	padding-top: 10px;
 	text-align: center;
-    width: 275px;
+    width: 285px;
     background: white;
 }
 .mdl-layout__drawer-button > .material-icons{

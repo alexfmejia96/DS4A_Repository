@@ -57,6 +57,25 @@ new MutationObserver(function() {
 	  	</div>";
 	}
 
+	let btn_about = document.getElementById('btn_about');
+	if(btn_about != null){
+		
+		if(btn_about.name != 'btn_updated'){
+			btn_about.name = 'btn_updated';
+			console.log('>btn_about: Updated!');
+			btn_about.onclick = function(){
+
+alert('Acerca de: \n\n\
+Aplicación desarrollada en marco del Curso DS4A de Correlation One \
+en asocio con el MinTIC para Empresas públicas de Medellín. \
+La aplicación clasifica el estado de los aisladores de la red de \
+distribución de energía mediante Yolov5.\n\n\
+Integrantes del Team 85: Alexander Fuenmayor, Mónica Buitrago, \
+Oscar Reyes, Fabio Pérez, Germán Torres y Marcela Mora')}
+
+		}
+	}
+
 	document.getElementById('progress_bar').innerHTML = bar;
 	console.log(document.title);
 
