@@ -78,7 +78,7 @@ def new():
 
   r=html.Div(className='mdl-layout__drawer', children=[
       html.Nav(className='mdl-navigation mdl-list__item', style={'height':'100%'}, children=[
-        mdl_A('CARGAR IMÁGENES', 'publish', btns_style, id='btn_loadimg'),
+        mdl_A('LISTA DE IMÁGENES', 'publish', btns_style, id='btn_loadimg'),
         mdl_A('DETALLE DE IMÁGENES', 'analytics', btns_style, id='btn_meta'),
         mdl_A('CLASIFICAR IMÁGENES', 'image_search', btns_style, id='btn_class'),
         html.Hr(style={'margin-bottom':'0'}),

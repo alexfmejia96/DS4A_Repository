@@ -15,7 +15,7 @@ def new(header_title=''):
 
           html.Div(className='dropdown-content', style={'float':'right'}, children=[
             html.Div(style={'padding':'8px 0px'}, children=[
-              html.A('Google Dive', href='#', id='btn_gdrive'),
+              html.A('Google Drive', href='#', id='btn_gdrive'),
               html.A('Cerrar Sesión', className='disable-item', id='btn_signOut'),
               html.Hr(),
               #html.A('Configuración', href='#'),
