@@ -252,5 +252,5 @@ def add_header(r):
 
 
 if __name__ == '__main__':
-    #app.run(host='0.0.0.0', port='8000', debug=True)
-    dash_app.run_server(host='0.0.0.0', port='8000', debug=True)
+    app.run(host='0.0.0.0', port='8000')
+    #dash_app.run_server(host='0.0.0.0', port='8000', debug=True)
