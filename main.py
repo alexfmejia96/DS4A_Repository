@@ -44,7 +44,7 @@ dash_app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 app = dash_app.server
 
 dash_app.layout = html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed-header", style={'position': 'absolute'}, children=[
-  header.new('DS4A Team 85'),
+  header.new('Clasificación de elementos en la Red de Distribución de Energía (EPM)'),
   container.new(children=[
     html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer", children=[
       html.Label('-', id='progress_bar', style={'position':'fixed','z-index':'10','transform':'scaleY(2)','width':'100%'}),
