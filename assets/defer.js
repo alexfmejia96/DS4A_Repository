@@ -14,10 +14,10 @@ function loadExtras() {
 
 new MutationObserver(function() {
 	if (document.title == 'Dash'){
-		bar="<div id='p2' class='mdl-progress'>\
-		    <div class='bufferbar bar bar2' style='width: 100%;''></div>\
+		bar="<div class='mdl-progress' style='width:100%'>\
+		    <div class='bufferbar bar' style='width:100%'></div>\
 		  	</div>";
-		bar = ''
+		//bar = ''
 			
 		let img_list = document.getElementById('img_list');
 		if(img_list != null){
@@ -57,7 +57,7 @@ new MutationObserver(function() {
 	  	</div>";
 	}
 
-	document.getElementById('dw_result').innerHTML = bar;
+	document.getElementById('progress_bar').innerHTML = bar;
 	console.log(document.title);
 
 }).observe(document.querySelector('title'),{ childList: true });

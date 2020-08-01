@@ -47,6 +47,7 @@ def result_card(img_title='', img_det='', img_class='', img_url=''):
         html.Div(className='mdl-card__title', style={'background': f'url(\'{img_url}\') center / cover'}, children=[
           html.H2(className='mdl-card__title-text result', style={'bottom':'10px', 'left':'10px'}, children=img_title.upper())
         ]),
+        #html.Img(className='mdl-card__title', src=img_url),
         html.Div(className='mdl-card__supporting-text', children=[    
           img_det
         ]),
@@ -65,18 +66,19 @@ def result_card_list(main_dir):
 
   for img_dir in dir_list:
     _img_dir = str(img_dir).replace('\\','/')
+    img_name = img_dir.name.split('.')[0]
     json_dir = _img_dir.replace('jpg','json')
 
     if Path(json_dir).is_file():
       with open(json_dir) as json_file:
-        card_det = json.load(json_file)
+        card_det = len(json.load(json_file)[img_name])
 
     else:
-      card_det = 'Ningún Aislador fue detectado!'
+      card_det = 0
 
     card = result_card(
       img_title=str(img_dir.name),
-      img_det=str(card_det),
+      img_det= html.Div(f'Aisladores Detectados: {card_det}', style={'color':'green','font-weight':'bold'} if card_det>0 else {}),
       img_class='None',
       img_url=_img_dir
     )
@@ -132,7 +134,7 @@ def img_details_view(asd):
 
 def img_map(img_data):
   coord = [float(i) for i in img_data['Coord'].split(' , ')]
-  map = Map(location=coord, zoom_start=11,
+  map = Map(location=coord, zoom_start=10,
             width='100%', height='100%',
             tiles='https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', attr='Google')
 

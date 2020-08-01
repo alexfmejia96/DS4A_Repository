@@ -18,7 +18,7 @@ def new(header_title=''):
               html.A('Google Dive', href='#', id='btn_gdrive'),
               html.A('Cerrar Sesión', className='disable-item', id='btn_signOut'),
               html.Hr(),
-              html.A('Configuración', href='#'),
+              #html.A('Configuración', href='#'),
               html.A('Acerca de', href='#')
             ])
           ])

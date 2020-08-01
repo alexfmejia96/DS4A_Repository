@@ -11,8 +11,8 @@ import json
 #---Alex Code
 
 def detect(save_img=False):
-    out, source, weights, view_img, save_txt, imgsz = \
-        opt.output, opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size
+    out, source, weights, view_img, save_txt, imgsz, CONF = \
+        opt.output, opt.source, opt.weights, opt.view_img, opt.save_txt, opt.img_size, opt.conf_thres
     webcam = source == '0' or source.startswith('rtsp') or source.startswith('http') or source.endswith('.txt')
 
     # Initialize
@@ -116,8 +116,8 @@ def detect(save_img=False):
                         }
 
                         dic_list[det_len-1]=dic_f
-
-                    if save_img or view_img:  # Add bbox to image
+					
+                    if (save_img or view_img):  # Add bbox to image
                         label = '%s#%s %.2f' % (names[int(cls)], str(det_len), conf)
                         plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=3)
                     det_len -= 1

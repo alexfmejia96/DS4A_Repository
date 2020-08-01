@@ -45,3 +45,6 @@
   display: block;
 }
 
+nav::-webkit-scrollbar {   /* Tamaño del scroll en horizontal */
+    display: none;  /* Ocultar scroll */
+}

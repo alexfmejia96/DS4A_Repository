@@ -47,6 +47,7 @@ dash_app.layout = html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed
   header.new('DS4A Team 85'),
   container.new(children=[
     html.Div(className="mdl-layout mdl-js-layout mdl-layout--fixed-drawer", children=[
+      html.Label('-', id='progress_bar', style={'position':'fixed','z-index':'10','transform':'scaleY(2)','width':'100%'}),
       navbar.new(),
       container.new(CURRENT_VIEW, id='main_debug'),
     ])
@@ -77,7 +78,7 @@ def remove_files():
 def detect(weights, img, conf, source, output):
   global PLATFORM; py= 'python' if PLATFORM=='windows' else 'python3'
   os.chdir('model/')
-  r = os.system(f'{py} detect.py --weights {weights} --img {img} --conf {conf} --source ../{source} --output ../{output} --save-txt')
+  r = os.system(f'{py} detect.py --weights {weights} --img-size {img} --conf-thres {conf} --source ../{source} --output ../{output} --save-txt')
   os.chdir('..')    
 
   return(r)
@@ -85,9 +86,11 @@ def detect(weights, img, conf, source, output):
 #---- CALLBACKS ---#
 @dash_app.callback(
     Output('main_debug', 'children'),
-    [Input('btn_loadimg', 'n_clicks'),Input('btn_meta', 'n_clicks'),Input('btn_class', 'n_clicks')])
-def clicks(btn_load, btn_meta, btn_class):
+    [Input('btn_loadimg', 'n_clicks'),Input('btn_meta', 'n_clicks'),Input('btn_class', 'n_clicks')],
+    [State('p_model','value'),State('p_img','value'),State('p_conf','value'),])
+def clicks(btn_load, btn_meta, btn_class, p_model, p_img, p_conf):
   global CURRENT_VIEW, IMG_DATA, CONFIG
+  CONFIG['weights']=p_model; CONFIG['img']=p_img; CONFIG['conf']=p_conf;
   print('>>Nav callback')
 
   if btn_check(btn_load, 'btn_load'):
@@ -103,8 +106,10 @@ def clicks(btn_load, btn_meta, btn_class):
     )
 
   elif btn_check(btn_class, 'btn_class'):
-    param = ['weights','img','conf','source','output'] 
-    detect(*[CONFIG[p] for p in param])
+    param = ['weights','img','conf','source','output']
+    temp = [CONFIG[p] for p in param]
+    print(temp)
+    detect(*temp)
     
     CURRENT_VIEW = elements.content_update('Resultados',
       html.Div(className="mdl-cell mdl-cell--4-col",
@@ -148,9 +153,10 @@ def set_code(btn_setcode, token_code):
     if SERVICE.is_valid:
       r=html.H4(className='mdl-card__title-text',children=[
           'Google Drive',
+          html.Div(style={'flex':'1'}),
           html.I(className='material-icons mdl-list__item-icon', children='check_circle',
-            style={'color':'white','transform':'scale(1.1)','margin-left':'32px','vertical-align':'sub'})
-        ], style={'font-size':'24px','display':'-webkit-inline-box','overflow':'visible','color':'white'})
+            style={'color':'white','transform':'scale(1.1)','margin':'auto'})
+        ], style={'font-size':'24px','width':'100%','color':'white'})
 
       r1 = [{'label':folder['name'], 'value':folder['id']} for folder in SERVICE.get_folder_list()]
       return([r, False, r1])
@@ -176,11 +182,12 @@ def gdrive_download(btn_driveld, sel_folder):
     img_list = SERVICE.get_files_infolder(sel_folder)
     IMG_DATA = misc.data_object(SERVICE, img_list, META_KEYS, CONFIG['source'])
 
-    r=html.H4(className='mdl-card__title-text',children=[
-        'Datos Descargados',
+    r=html.H4(className='mdl-card__title-text', children=[
+        'Descargado',
+        html.Div(style={'flex':'1'}),
         html.I(className='material-icons mdl-list__item-icon', children='check_circle',
-          style={'color':'white','transform':'scale(1.1)','margin-left':'32px','vertical-align':'sub'})
-      ], style={'font-size':'24px','display':'-webkit-inline-box','overflow':'visible','color':'white'})
+          style={'color':'white','transform':'scale(1.1)','margin':'auto'})
+      ], style={'font-size':'24px','width':'100%','color':'white'})
     return(r)
 
   return(navbar.panel_folders())
@@ -217,6 +224,26 @@ def meta_view(sel_img):
   img_map = html.Iframe(**{'data-html':img_map}, id='meta_frame', style={'width':'100%','height':'100%'})
 
   return([meta_table, img_map, sel_img])
+
+@dash_app.callback(
+    Output('lab_conf', 'children'),
+    [Input('p_conf', 'value')])
+def conf_lab_update(value):
+  return(f'+ Confianza:   {value}')
+
+@app.after_request
+def add_header(r):
+  """
+  Add headers to both force latest IE rendering engine or Chrome Frame,
+  and also to cache the rendered page for 10 minutes.
+  """
+  print('>'*10)
+  r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+  r.headers["Pragma"] = "no-cache"
+  r.headers["Expires"] = "0"
+  r.headers['Cache-Control'] = 'public, max-age=0'
+  return(r)
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8000', debug=True)
