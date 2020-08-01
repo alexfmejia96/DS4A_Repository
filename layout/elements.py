@@ -77,9 +77,9 @@ def result_card_list(main_dir):
         detection = dict(**detection, **json_dict)
         card_det = len(json_dict[img_name])
         good, bad = good, bad = misc.detect_count(json_dict)
+        state, color = ['BUEN', 'green'] if good==1 else ['MAL', 'red']
         img_det = html.Div([
-          html.Div(f'Aisladores en Buen Estado: {good}', style={'color':'green','font-weight':'bold'}),
-          html.Div(f'Aisladores en Mal  Estado: {bad}', style={'color':'red','font-weight':'bold'})
+          html.Div(f'AISLADORES EN {state} ESTADO', style={'color':color,'font-weight':'bold'})
         ])
 
     else:
