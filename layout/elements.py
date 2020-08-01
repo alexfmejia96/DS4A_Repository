@@ -79,7 +79,8 @@ def result_card_list(main_dir):
         good, bad = good, bad = misc.detect_count(json_dict)
         state, color = ['BUEN', 'green'] if good==1 else ['MAL', 'red']
         img_det = html.Div([
-          html.Div(f'AISLADORES EN {state} ESTADO', style={'color':color,'font-weight':'bold'})
+          html.Div(f'AISLADORES EN {state} ESTADO',
+            style={'color':color,'font-weight':'bold','font-family':"'Saira Condensed',sans-serif",'font-size':'20px'})
         ])
 
     else:
