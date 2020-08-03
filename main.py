@@ -1,5 +1,5 @@
 
-import os, platform, glob
+import os, platform, glob, subprocess
 import dash
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
@@ -88,15 +88,12 @@ def detect(weights, img, conf, source, output):
     Output('header_title', 'children'),
     [Input('btn_restart', 'n_clicks')])
 def restart_dash(btn_restart):
-  if btn_check(btn_restart, 'btn_restart'):
+  if btn_restart != None:
     remove_files()
-    import gc
-    gc.collect()
-    
     print('*'*40)
     print('REINICIANDO APP')
     print('*'*40)
-    exit()
+    quit()
   
   return('Clasificación de elementos en la Red de Distribución de Energía (EPM)')
 
@@ -193,7 +190,7 @@ def set_code(btn_setcode, token_code):
 def gdrive_download(btn_driveld, sel_folder):
   global SERVICE, IMG_DATA, CONFIG
 
-  if btn_check(btn_driveld, 'btn_driveld'):
+  if btn_driveld != None:
     remove_files()
     img_list = SERVICE.get_files_infolder(sel_folder)
     IMG_DATA = misc.data_object(SERVICE, img_list, META_KEYS, CONFIG['source'])
