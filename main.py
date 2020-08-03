@@ -92,8 +92,10 @@ def restart_dash(btn_restart):
     remove_files()
     import gc
     gc.collect()
-    print('Reiniciando App')
-    print('*'*20)
+    
+    print('*'*40)
+    print('REINICIANDO APP')
+    print('*'*40)
     exit()
   
   return('Clasificación de elementos en la Red de Distribución de Energía (EPM)')
