@@ -124,20 +124,20 @@ def clicks(btn_load, btn_meta, btn_class, p_model, p_img, p_conf):
   return(CURRENT_VIEW)
 
 @dash_app.callback(
-  [Output('btn_signOut', 'className'), Output('btn_signOut', 'href'), Output('view_gdrive', 'hidden'), Output('get_code', 'href')],
+  [Output('view_gdrive', 'hidden'), Output('get_code', 'href')],
   [Input('btn_gdrive', 'n_clicks')])
 def gdrive_connect(btn_gdrive):
   global SERVICE
   print('>>Drive callback')
 
   if btn_check(btn_gdrive, 'btn_gdrive'):
-    return(['', '/', False, SERVICE.auth_url])
+    return([False, SERVICE.auth_url])
 
   if SERVICE.is_valid != None:
     if not SERVICE.is_valid:
-      return(['', '/', False, SERVICE.auth_url])
+      return([False, SERVICE.auth_url])
 
-  return(['disable-item', None, True, ''])
+  return([True, ''])
 
 @dash_app.callback(
     [Output('view_gdrive','children'), Output('view_folders','hidden'), Output('folder_list','options')],
@@ -178,7 +178,6 @@ def gdrive_download(btn_driveld, sel_folder):
 
   if btn_check(btn_driveld, 'btn_driveld'):
     remove_files()
-
     img_list = SERVICE.get_files_infolder(sel_folder)
     IMG_DATA = misc.data_object(SERVICE, img_list, META_KEYS, CONFIG['source'])
 
@@ -237,19 +236,17 @@ def meta_view(sel_img):
 def conf_lab_update(value):
   return(f'+ Confianza:   {value}')
 
-@app.after_request
-def add_header(r):
-  """
-  Add headers to both force latest IE rendering engine or Chrome Frame,
-  and also to cache the rendered page for 10 minutes.
-  """
-  print('>'*10)
-  r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
-  r.headers["Pragma"] = "no-cache"
-  r.headers["Expires"] = "0"
-  r.headers['Cache-Control'] = 'public, max-age=0'
-  return(r)
-
+@dash_app.callback(
+    Output('header_title', 'children'),
+    [Input('btn_restart', 'n_clicks')])
+def restart_dash(btn_restart):
+  if btn_check(btn_restart, 'btn_restart'):
+    remove_files()
+    print('Reiniciando Aplicación')
+    print('*'*20)
+    exit()
+  
+  return('Clasificación de elementos en la Red de Distribución de Energía (EPM)')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8000')
