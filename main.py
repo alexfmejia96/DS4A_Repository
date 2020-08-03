@@ -174,13 +174,13 @@ def set_code(btn_setcode, token_code):
       r1 = [{'label':folder['name'], 'value':folder['id']} for folder in SERVICE.get_folder_list()]
       return([r, False, r1])
 
-  n_clicks = BTN_COUNT['btn_setcode']
+  #n_clicks = BTN_COUNT['btn_setcode']
   if SERVICE.is_valid != None:
     if not SERVICE.is_valid:
       print('>tk Invalido')
-      return([navbar.panel_gdrive('Token Invalido!', n_clicks=n_clicks), True, ''])
+      return([navbar.panel_gdrive('Token Invalido!', n_clicks=None), True, ''])
 
-  return([navbar.panel_gdrive(n_clicks=n_clicks), True, ''])
+  return([navbar.panel_gdrive(n_clicks=None), True, ''])
 
 @dash_app.callback(
     Output('view_folders','children'),
