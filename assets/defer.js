@@ -26,10 +26,10 @@ new MutationObserver(function() {
 				img_list.name = 'updated';
 				console.log('>img_list: Updated!')
 				for (option of img_list.children){
-					if (option.text.includes('+')){
+					if (option.text.startsWith('+')) {
 						option.text = option.text.replace('+','  ');
 						option.className = 'good';
-					}else if(option.text.includes('-')){
+					}else if(option.text.startsWith('-')) {
 						option.text = option.text.replace('-','  ');
 						option.className = 'bad';
 					}else if(option.text.includes('>')){

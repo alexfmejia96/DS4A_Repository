@@ -26,7 +26,7 @@ COL_NAMES = {
     'path': 'Ruta',
     'Coord': 'Coordenadas',
     'Alt': 'Altitud',
-    'C_Date': 'Fecha de Creación'
+    'C_Date': 'Fecha de Captura'
 }
 
 CURRENT_VIEW = elements.empty_msg()

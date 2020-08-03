@@ -42,7 +42,10 @@ def parse_medatada(raw_metadata, meta_keys):
 	for meta_key in meta_keys:
 		data = raw_metadata.get(meta_keys_dic[meta_key])
 		if meta_key == 'GPS':
-			data = parse_GPS_info(data)
+			try:
+				data = parse_GPS_info(data)
+			except:
+				data = [0,0,0]
 			
 		clean_meta.append(data)
 
