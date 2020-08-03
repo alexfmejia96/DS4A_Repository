@@ -20,7 +20,7 @@ def mdl_A(A_label, A_icon, A_style=dict(), A_href='#', id=''):
 
   return(r)
 
-def panel_gdrive(msg=None, n_clicks=0):
+def panel_gdrive(msg=None, n_clicks=None):
   r=[
       html.H4(className='mdl-card__title-text', children='Google Drive',
         style={'font-size':'24px','margin-bottom':'16px','color':'white'}),
