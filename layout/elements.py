@@ -82,7 +82,7 @@ def result_card_list(main_dir):
             children=f"Aislador {['Malo','Bueno'][isolator['cls_id']]}#{i+1}: Probabilidad {isolator['conf']*100:.2f}%"))
           
         
-        good, bad = good, bad = misc.detect_count(json_dict)
+        good, bad = misc.detect_count(json_dict)
         state, color = ['BUEN', 'green'] if good==1 else ['MAL', 'red']
         img_det = html.Div([
           html.Div(f'AISLADORES EN {state} ESTADO',
@@ -110,7 +110,15 @@ def generate_options(path_list):
   for path in path_list:
     _path = str(path).replace('\\','/')
     json_path = _path.replace('jpg','json') 
-    sign = '+' if Path(json_path).is_file() else '' 
+    if Path(json_path).is_file():
+      with open(json_path) as json_file:
+        json_dict = json.load(json_file)
+
+      good, bad = good, bad = misc.detect_count(json_dict)
+      sign = '+' if good==1 else '-'
+
+    else:
+      sign = ''
     
     option = {'label':f'{sign}{path.name.upper()}', 'value':_path}
     img_options.append(option)

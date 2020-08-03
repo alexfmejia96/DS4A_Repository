@@ -1,13 +1,12 @@
 
-import os, platform, glob, subprocess
+import os, platform, glob, json
+from pathlib import Path
 import dash
 import dash_html_components as html
 from dash.dependencies import Input, Output, State
 
 from layout import header, navbar, table, elements, container
 from utils import misc, gdrive
-
-import pandas as pd
 
 PLATFORM = platform.system().lower()
 CONFIG = {
@@ -230,8 +229,22 @@ def meta_view(sel_img):
   img_name = sel_img.split('/')[-1].upper()
   img_data = df.loc[img_name]
 
+  json_dir = sel_img.replace('jpg','json')
+  print(json_dir)
+  if Path(json_dir).is_file():
+    with open(json_dir) as json_file:
+      json_dict = json.load(json_file)
+
+    good, bad = good, bad = misc.detect_count(json_dict)
+    state, color = ['Buen Estado', 'green'] if good==1 else ['Mal Estado', 'red']
+
+  else:
+    state = '---'
+    color = 'grey'
+
+
   meta_table = [
-    elements.meta_row('Clase', '---'),
+    elements.meta_row('Clase', html.Div(state, style={'color':color})),
     elements.meta_row('Fecha de Captura', img_data['C_Date'].split(' ')[0]),
     elements.meta_row('Hora de Captura', img_data['C_Date'].split(' ')[1]),
     elements.meta_row('Coordenadas', img_data['Coord']),
@@ -250,5 +263,5 @@ def conf_lab_update(value):
   return(f'+ Confianza:   {value}')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port='8000')
+    app.run(host='0.0.0.0', port='8000', debug=True)
     #dash_app.run_server(host='0.0.0.0', port='8000', debug=True)
