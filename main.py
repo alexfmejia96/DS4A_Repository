@@ -142,9 +142,8 @@ def clicks(btn_load, btn_meta, btn_class, p_model, p_img, p_conf):
   [Input('btn_gdrive', 'n_clicks')])
 def gdrive_connect(btn_gdrive):
   global SERVICE
-  print('>>Drive callback')
 
-  if btn_check(btn_gdrive, 'btn_gdrive'):
+  if btn_gdrive != None:
     return([False, SERVICE.auth_url])
 
   if SERVICE.is_valid != None:
@@ -160,7 +159,7 @@ def gdrive_connect(btn_gdrive):
 def set_code(btn_setcode, token_code):
   global SERVICE, BTN_COUNT
 
-  if btn_check(btn_setcode, 'btn_setcode'):
+  if btn_setcode != None:
     SERVICE.auth_service(token_code)
 
     print(f'>SERVICE.is_valid: {SERVICE.is_valid}')
