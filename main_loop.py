@@ -1,5 +1,4 @@
 import os
 
 while True:
-	os.system('python main.py')
-	print('Restarting Service')
+	os.system('python3 main.py')

@@ -83,6 +83,21 @@ def detect(weights, img, conf, source, output):
 
   return(r)
 
+##---- RESTART ---#
+@dash_app.callback(
+    Output('header_title', 'children'),
+    [Input('btn_restart', 'n_clicks')])
+def restart_dash(btn_restart):
+  if btn_check(btn_restart, 'btn_restart'):
+    remove_files()
+    import gc
+    gc.collect()
+    print('Reiniciando App')
+    print('*'*20)
+    exit()
+  
+  return('Clasificación de elementos en la Red de Distribución de Energía (EPM)')
+
 #---- CALLBACKS ---#
 @dash_app.callback(
     Output('main_debug', 'children'),
@@ -235,18 +250,6 @@ def meta_view(sel_img):
     [Input('p_conf', 'value')])
 def conf_lab_update(value):
   return(f'+ Confianza:   {value}')
-
-@dash_app.callback(
-    Output('header_title', 'children'),
-    [Input('btn_restart', 'n_clicks')])
-def restart_dash(btn_restart):
-  if btn_check(btn_restart, 'btn_restart'):
-    remove_files()
-    print('Reiniciando Aplicación')
-    print('*'*20)
-    exit()
-  
-  return('Clasificación de elementos en la Red de Distribución de Energía (EPM)')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='8000')
